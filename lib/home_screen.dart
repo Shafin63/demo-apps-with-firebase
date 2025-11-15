@@ -96,6 +96,29 @@ class _HomeScreenState extends State<HomeScreen> {
           return SizedBox();
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // writing data
+          FirebaseFirestore.instance
+              .collection("football")
+              .doc("usavschina")
+              .set({
+            'team1':'USA',
+            'team1_score':2,
+            'team2':'China',
+            'team2_score': 10,
+            'is_running': false,
+            'winner_team': 'China',
+          });
+
+          // deleting data
+          // FirebaseFirestore.instance
+          //     .collection("football")
+          //     .doc("usavschina")
+          //     .delete();
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 }
