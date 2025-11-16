@@ -1,99 +1,48 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class StudentInfoHome extends StatefulWidget {
+  const StudentInfoHome({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<StudentInfoHome> createState() => _StudentInfoHomeState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  List<FootballMatch> _matchList = [];
-  bool _loadInProgress = false;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _getFootballMatches();
-  // }
-  //
-  // Future<void> _getFootballMatches() async {
-  //   _loadInProgress = true;
-  //   setState(() {});
-  //   _matchList.clear();
-  //   final snapshots = await FirebaseFirestore.instance
-  //       .collection("football")
-  //       .get();
-  //   for (QueryDocumentSnapshot<Map<String, dynamic>> doc in snapshots.docs) {
-  //     _matchList.add(
-  //       FootballMatch(
-  //         id: doc.id,
-  //         team1: doc.get("team1"),
-  //         team1Score: doc.get("team1_score"),
-  //         team2: doc.get("team2"),
-  //         team2Score: doc.get("team2_score"),
-  //         isRunning: doc.get("is_running"),
-  //         winner: doc.get("winner_team"),
-  //       ),
-  //     );
-  //   }
-  //   _loadInProgress = false;
-  //   setState(() {});
-  // }
+class _StudentInfoHomeState extends State<StudentInfoHome> {
+  List<StudentInfo> _studentsList = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Football Live Score"),
-        actions: [
-          IconButton(onPressed: _onTapSignOutButton, icon: Icon(Icons.logout))],
-      ),
+      appBar: AppBar(title: Text("Students Information")),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection("football").snapshots(),
+        stream: FirebaseFirestore.instance.collection("students").snapshots(),
         builder: (context, snapshots) {
           if (snapshots.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshots.hasError) {
             return Center(child: Text(snapshots.error.toString()));
           } else if (snapshots.hasData) {
-            _matchList.clear();
+            _studentsList.clear();
             for (QueryDocumentSnapshot<Map<String, dynamic>> doc
-                in snapshots.data!.docs) {
-              _matchList.add(
-                FootballMatch(
+            in snapshots.data!.docs) {
+              _studentsList.add(
+                StudentInfo(
                   id: doc.id,
-                  team1: doc.get("team1"),
-                  team1Score: doc.get("team1_score"),
-                  team2: doc.get("team2"),
-                  team2Score: doc.get("team2_score"),
-                  isRunning: doc.get("is_running"),
-                  winner: doc.get("winner_team"),
+                  name: doc.get("name"),
+                  rollNumber: doc.get("rollNumber"),
+                  course: doc.get("course"),
                 ),
               );
             }
             return ListView.builder(
-              itemCount: _matchList.length,
+              itemCount: _studentsList.length,
               itemBuilder: (context, index) {
-                final footballMatch = _matchList[index];
+                final studentInfo = _studentsList[index];
                 return ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: footballMatch.isRunning
-                        ? Colors.green
-                        : Colors.grey,
-                    radius: 10,
-                  ),
-                  title: Text(
-                    "${footballMatch.team1} VS ${footballMatch.team2}",
-                  ),
-                  trailing: Text(
-                    "${footballMatch.team1Score}-${footballMatch.team2Score}",
-                  ),
-                  subtitle: Text(
-                    "Winner Team: ${footballMatch.isRunning ? "Pending" : footballMatch.winner}",
-                  ),
+                  title: Text(studentInfo.name),
+                  trailing: Text("Roll: ${studentInfo.rollNumber}"),
+                  subtitle: Text("Course: ${studentInfo.course}"),
                 );
               },
             );
@@ -101,53 +50,20 @@ class _HomeScreenState extends State<HomeScreen> {
           return SizedBox();
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // writing data
-          FirebaseFirestore.instance
-              .collection("football")
-              .doc("usavschina")
-              .set({
-                'team1': 'USA',
-                'team1_score': 2,
-                'team2': 'China',
-                'team2_score': 10,
-                'is_running': false,
-                'winner_team': 'China',
-              });
-
-          // deleting data
-          // FirebaseFirestore.instance
-          //     .collection("football")
-          //     .doc("usavschina")
-          //     .delete();
-        },
-        child: Icon(Icons.add),
-      ),
     );
   }
 }
 
-void _onTapSignOutButton() {
-  FirebaseAuth.instance.signOut();
-}
-
-class FootballMatch {
+class StudentInfo {
   final String id;
-  final String team1;
-  final int team1Score;
-  final String team2;
-  final int team2Score;
-  final bool isRunning;
-  final String winner;
+  final String name;
+  final int rollNumber;
+  final String course;
 
-  FootballMatch({
+  StudentInfo({
     required this.id,
-    required this.team1,
-    required this.team1Score,
-    required this.team2,
-    required this.team2Score,
-    required this.isRunning,
-    required this.winner,
+    required this.name,
+    required this.rollNumber,
+    required this.course,
   });
 }

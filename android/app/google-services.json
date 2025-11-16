@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "168981535464",
-    "project_id": "live-score-app-f1f07",
-    "storage_bucket": "live-score-app-f1f07.firebasestorage.app"
+    "project_number": "860583782462",
+    "project_id": "students-information-32470",
+    "storage_bucket": "students-information-32470.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:168981535464:android:3a9d482bb5ae9f2658075d",
+        "mobilesdk_app_id": "1:860583782462:android:a65057c16a5cbe65c4c96f",
         "android_client_info": {
           "package_name": "com.example.live_score_app_with_firebase"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBZIJTE3S2QBSoP8_SvFVxC3dHp6xy3udo"
+          "current_key": "AIzaSyB0DZ7_Ha1zMARjiOHgZGyJGXART9eirgQ"
         }
       ],
       "services": {
