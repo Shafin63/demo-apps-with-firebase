@@ -1,24 +1,25 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:live_score_app_with_firebase/home_screen.dart';
+import 'package:live_score_app_with_firebase/sign_up_screen.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class SignInScreen extends StatefulWidget {
+  const SignInScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
-  final TextEditingController _confirmPasswordTEController =
-      TextEditingController();
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Signup Screen")),
+      appBar: AppBar(title: Text("SignIn Screen")),
 
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -27,7 +28,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             spacing: 10,
             children: [
-              const SizedBox(height: 50),
+              const SizedBox(height: 30),
               TextFormField(
                 controller: _emailTEController,
                 decoration: InputDecoration(hintText: "Email"),
@@ -48,19 +49,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   return null;
                 },
               ),
-              TextFormField(
-                controller: _confirmPasswordTEController,
-                decoration: InputDecoration(hintText: "Confirm Password"),
-                validator: (String? value) {
-                  if (value?.trim().isEmpty ?? true) {
-                    return "Re-enter password";
-                  } else if (value! != _passwordTEController.text) {
-                    return "Password does not match";
-                  }
-                  return null;
-                },
-              ),
+
               FilledButton(onPressed: _onTapSubmit, child: Text("Submit")),
+              FilledButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => SignUpScreen()),
+                  );
+                },
+                child: Text("Sign-up"),
+              ),
             ],
           ),
         ),
@@ -70,24 +69,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _onTapSubmit() {
     if (_formKey.currentState!.validate()) {
-      _createNewUser();
+      _signInUser();
     }
   }
 
-  void _createNewUser() async {
+  void _signInUser() async {
     try {
-      await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
+      UserCredential user = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
             email: _emailTEController.text.trim(),
             password: _passwordTEController.text,
           );
-      showSnackBar("Sign-up Successful");
+      showSnackBar("Sign-in Successful");
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        showSnackBar('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        showSnackBar('The account already exists for that email.');
-      }
+      showSnackBar(e.message ?? "Something went wrong");
     } catch (e) {
       showSnackBar(e.toString());
     }

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -45,7 +46,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Football Live Score")),
+      appBar: AppBar(
+        title: Text("Football Live Score"),
+        actions: [
+          IconButton(onPressed: _onTapSignOutButton, icon: Icon(Icons.logout))],
+      ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection("football").snapshots(),
         builder: (context, snapshots) {
@@ -103,13 +108,13 @@ class _HomeScreenState extends State<HomeScreen> {
               .collection("football")
               .doc("usavschina")
               .set({
-            'team1':'USA',
-            'team1_score':2,
-            'team2':'China',
-            'team2_score': 10,
-            'is_running': false,
-            'winner_team': 'China',
-          });
+                'team1': 'USA',
+                'team1_score': 2,
+                'team2': 'China',
+                'team2_score': 10,
+                'is_running': false,
+                'winner_team': 'China',
+              });
 
           // deleting data
           // FirebaseFirestore.instance
@@ -121,6 +126,10 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
+
+void _onTapSignOutButton() {
+  FirebaseAuth.instance.signOut();
 }
 
 class FootballMatch {
