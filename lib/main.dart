@@ -9,5 +9,6 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   FCMService.initialize();
+  print(await FCMService.getToken());
   runApp(const FootballLiveScoreApp());
 }

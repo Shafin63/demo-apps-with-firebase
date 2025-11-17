@@ -9,7 +9,7 @@ class FCMService {
 
     // Background state
     FirebaseMessaging.onMessageOpenedApp.listen(_handleNotification);
-    
+
     //Terminated state
     FirebaseMessaging.onBackgroundMessage(_handleTerminatedAppNotification);
   }
@@ -19,8 +19,16 @@ class FCMService {
     print(message.notification?.title);
     print(message.notification?.body);
   }
+
+  static Future<String?> getToken() async {
+    return FirebaseMessaging.instance.getToken();
+  }
+
+  static void onTokenRefresh() {
+    FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
+      print(newToken);
+    });
+  }
 }
 
-Future<void> _handleTerminatedAppNotification(RemoteMessage message) async {
-
-}
+Future<void> _handleTerminatedAppNotification(RemoteMessage message) async {}
